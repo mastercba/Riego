@@ -6,6 +6,7 @@ from time import sleep
 from . import sim800
 from . import servicio
 from . import ulcd1602
+from . import water_quality
 import machine, onewire, ds18x20, json
 
 #display ,0 hh:mm 25.4C xxxx
@@ -57,6 +58,8 @@ class Riego:
         lcd.puts("ok", 2, 1)    
         self.tag = tag                                # TAG
         lcd.puts(self.tag, 13, 1)
+        water_quality.set_K_wqs()      # Init Water Quality
+        water_quality.set_params_wqs()        
         # Initialize the modem
         modem.initialize()
         # Connect the modem
@@ -124,6 +127,7 @@ def process():
             
         print_date_time()               # LCD1602 date&time            
         ds18b20()                    # read&LCD1602 ds18b20
+        water_quality.read_wqs()             # waterquality        
 # ----------------------------------------------------------
 
 # BlinkBlueLed
