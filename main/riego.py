@@ -30,6 +30,42 @@ ds_pin = machine.Pin(13)                                # DS18b20 Pin
 ds_sensor = ds18x20.DS18X20(onewire.OneWire(ds_pin))    # DS18B20 OBJ
 adco = Pin(36, Pin.IN, Pin.PULL_UP)                          # ADC 36
 
+
+
+# rutinas SMS    
+def smsriego():
+    #15:19/1-2Riegos
+    print('RG')
+    lcd.puts("#RG", 8, 1)
+    servicio.riego()
+    lcd.puts("   ", 8, 1)
+
+def smsmezcla():
+    #15:19/OK!
+    print('MZ')
+    lcd.puts("#MZ", 8, 1)
+    servicio.mezclar()
+    lcd.puts("   ", 8, 1)
+
+def smswater():
+    #15:19/OK!
+    print('WT')
+    lcd.puts("#WT", 8, 1)
+    lt = servicio.llenarTanque()
+    if not lt:
+        print('no se pudo llenar tanque de agua')
+        sleep(50)
+    lcd.puts("   ", 8, 1)
+
+
+codes ={
+    'RG' : smsriego,
+    'MZ' : smsmezcla,
+    'WT' : smswater,
+    }
+
+
+
 # Simple software WDT implementation
 wdt_counter = 0
 
@@ -55,7 +91,8 @@ class Riego:
         lcd.puts("W:   R      v", 0, 1)   #setup lcd file 1
         if (adco.value() == 0):               # water level
             lcd.puts("no", 2, 1)
-        lcd.puts("ok", 2, 1)    
+        else:
+            lcd.puts("ok", 2, 1)    
         self.tag = tag                                # TAG
         lcd.puts(self.tag, 13, 1)
         water_quality.set_K_wqs()      # Init Water Quality
@@ -124,7 +161,18 @@ def process():
             print('Riego: {}'.format(r))
             lcd.puts(r, 6, 1)
             lcd.puts(" ", 4, 1)
-            
+
+        sms_rqst = modem.check_sms_rcv()        # SMS rcved
+        vals = list(sms_rqst.values())
+        if vals[1] != '0':
+            work = codes[vals[0]]
+            work()
+
+        if (adco.value() == 0):               # water level
+            lcd.puts("no", 2, 1)
+        else:
+            lcd.puts("ok", 2, 1) 
+
         print_date_time()               # LCD1602 date&time            
         ds18b20()                    # read&LCD1602 ds18b20
         water_quality.read_wqs()             # waterquality        
