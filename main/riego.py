@@ -146,13 +146,13 @@ def process():
             if not ra:
                 print('no se pudo llenar tanque de agua')
                 lcd.puts("no", 2, 1)
-                sleep(50)
+                sleep(55)
                 break
             print('ok')
             lcd.puts("ok", 2, 1)
             r = 0                          # inicia #riegos
             lcd.puts("      ", 6, 1)            # clear lcd
-            
+            sleep(55)
                                                # irrigation
         if ((int(hr) in range(10,17,1))or(int(hr[0])==0 and int(hr[1])==7)or(int(hr[0])==0 and int(hr[1])==8)or(int(hr[0])==0 and int(hr[1])==9)) and (minu == "00" or minu == "30"):     
             lcd.puts("*", 4, 1)

@@ -9,7 +9,7 @@ def start():
     from main.riego import Riego
 
     # Begin MAINcode
-    tag = '1.0'
+    tag = '1.4'
     irrigation = Riego(tag)
 
 def boot():
