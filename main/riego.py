@@ -168,11 +168,6 @@ def process():
             work = codes[vals[0]]
             work()
 
-        if (adco.value() == 0):               # water level
-            lcd.puts("no", 2, 1)
-        else:
-            lcd.puts("ok", 2, 1) 
-
         print_date_time()               # LCD1602 date&time            
         ds18b20()                    # read&LCD1602 ds18b20
         water_quality.read_wqs()             # waterquality        
